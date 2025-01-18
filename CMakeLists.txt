@@ -55,7 +55,7 @@ target_include_directories(MATRIZ16 PRIVATE
 
 # Add any user requested libraries
 target_link_libraries(MATRIZ16 
-            
+            hardware_pwm
         )
 
 pico_add_extra_outputs(MATRIZ16)

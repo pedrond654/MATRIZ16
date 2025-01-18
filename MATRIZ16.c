@@ -1,9 +1,19 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "hardware/timer.h"
+#include "hardware/pwm.h"
+#include "hardware/clocks.h"
+
 
 //define o LED de saída
 #define GPIO_LED 13
+
+// Configuração do pino do buzzer
+#define BUZZER_PIN 22
+
+// Configuração da frequência do buzzer (em Hz)
+#define BUZZER_FREQUENCY 100
+
 
 //define os pinos do teclado com as portas GPIO
 uint columns[4] = {11, 10, 9, 8}; 
@@ -54,6 +64,23 @@ void pico_keypad_init(uint columns[4], uint rows[4], char matrix_values[16]) {
         all_columns_mask = all_columns_mask + (1 << _columns[i]);
         column_mask[i] = 1 << _columns[i];
     }
+}
+
+// Definição de uma função para inicializar o PWM no pino do buzzer
+void pwm_init_buzzer(uint pin) {
+    // Configurar o pino como saída de PWM
+    gpio_set_function(pin, GPIO_FUNC_PWM);
+
+    // Obter o slice do PWM associado ao pino
+    uint slice_num = pwm_gpio_to_slice_num(pin);
+
+    // Configurar o PWM com frequência desejada
+    pwm_config config = pwm_get_default_config();
+    pwm_config_set_clkdiv(&config, clock_get_hz(clk_sys) / (BUZZER_FREQUENCY * 4096)); // Divisor de clock
+    pwm_init(slice_num, &config, true);
+
+    // Iniciar o PWM no nível baixo
+    pwm_set_gpio_level(pin, 0);
 }
 
 //coleta o caracter pressionado
@@ -109,6 +136,24 @@ char pico_keypad_get_key(void) {
     }
 }
 
+// Definição de uma função para emitir um beep com duração especificada
+void beep(uint pin, uint duration_ms) {
+    // Obter o slice do PWM associado ao pino
+    uint slice_num = pwm_gpio_to_slice_num(pin);
+
+    // Configurar o duty cycle para 50% (ativo)
+    pwm_set_gpio_level(pin, 2048);
+
+    // Temporização
+    sleep_ms(duration_ms);
+
+    // Desativar o sinal PWM (duty cycle 0)
+    pwm_set_gpio_level(pin, 0);
+
+    // Pausa entre os beeps
+    sleep_ms(100); // Pausa de 100ms
+}
+
 //função principal
 int main() {
     stdio_init_all();
@@ -117,6 +162,11 @@ int main() {
     gpio_init(GPIO_LED);
     gpio_set_dir(GPIO_LED, GPIO_OUT);
 
+    gpio_init(BUZZER_PIN);
+    gpio_set_dir(BUZZER_PIN, GPIO_OUT);
+    // Inicializar o PWM no pino do buzzer
+    pwm_init_buzzer(BUZZER_PIN);
+
     while (true) {
         caracter_press = pico_keypad_get_key();
         printf("\nTecla pressionada: %c\n", caracter_press);
@@ -124,7 +174,9 @@ int main() {
         //Avaliação de caractere para o LED
         if (caracter_press=='B')
         {
+            beep(BUZZER_PIN, 1000); // Bipe de 500ms
             gpio_put(GPIO_LED,true);
+
         }else
         {
             gpio_put(GPIO_LED,false);

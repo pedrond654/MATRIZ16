@@ -13,7 +13,8 @@
       "left": 9.05,
       "rotate": 90,
       "attrs": { "value": "1000" }
-    }
+    },
+    { "type": "wokwi-buzzer", "id": "bz1", "top": -84, "left": 213, "attrs": { "volume": "0.1" } }
   ],
   "connections": [
     [ "pico:GP0", "$serialMonitor:RX", "", [] ],
@@ -28,7 +29,9 @@
     [ "pico:GP19", "keypad1:R1", "green", [ "h29.11", "v163.24", "h-384", "v-9.6" ] ],
     [ "r1:1", "led1:A", "green", [ "h0" ] ],
     [ "pico:GP13", "r1:2", "green", [ "h-76.8", "v-9.56" ] ],
-    [ "pico:GND.4", "led1:C", "black", [ "h-86.4", "v-143.96" ] ]
+    [ "pico:GND.4", "led1:C", "black", [ "h-86.4", "v-143.96" ] ],
+    [ "bz1:1", "pico:GND.8", "green", [ "v19.2" ] ],
+    [ "bz1:2", "pico:GP22", "green", [ "v0" ] ]
   ],
   "dependencies": {}
 }
