@@ -9,7 +9,7 @@
 #define GPIO_LED 13
 
 // Configuração do pino do buzzer
-#define BUZZER_PIN 22
+#define BUZZER_PIN 21
 
 // Configuração da frequência do buzzer (em Hz)
 #define BUZZER_FREQUENCY 100
@@ -159,6 +159,8 @@ int main() {
     stdio_init_all();
     pico_keypad_init(columns, rows, KEY_MAP);
     char caracter_press;
+    char buffer[4];
+    uint use_uart = 1;
     gpio_init(GPIO_LED);
     gpio_set_dir(GPIO_LED, GPIO_OUT);
 
@@ -168,11 +170,20 @@ int main() {
     pwm_init_buzzer(BUZZER_PIN);
 
     while (true) {
-        caracter_press = pico_keypad_get_key();
-        printf("\nTecla pressionada: %c\n", caracter_press);
+
+        if (use_uart == 0) {
+            caracter_press = pico_keypad_get_key();
+            printf("\nTecla pressionada: %c\n", caracter_press);
+
+        }
+        else {
+            scanf("%4s", buffer);
+            printf("\nTecla pressionada: %s\n", buffer);
+
+        }
 
         //Avaliação de caractere para o LED
-        if (caracter_press=='B')
+        if (caracter_press=='B' || buffer[0] == 'B')
         {
             beep(BUZZER_PIN, 1000); // Bipe de 500ms
             gpio_put(GPIO_LED,true);
