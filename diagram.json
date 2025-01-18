@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "author": "Rodrigo Almeida Piropo",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-pi-pico-w", "id": "pico", "top": -3.25, "left": 109.15, "attrs": {} },
+    { "type": "wokwi-membrane-keypad", "id": "keypad1", "top": -146, "left": -263.2, "attrs": {} },
+    { "type": "wokwi-led", "id": "led1", "top": -22.8, "left": 13.4, "attrs": { "color": "red" } },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 91.2,
+      "left": 9.05,
+      "rotate": 90,
+      "attrs": { "value": "1000" }
+    }
+  ],
+  "connections": [
+    [ "pico:GP0", "$serialMonitor:RX", "", [] ],
+    [ "pico:GP1", "$serialMonitor:TX", "", [] ],
+    [ "pico:GP8", "keypad1:C4", "green", [ "h-38.4", "v124.8", "h-172.5" ] ],
+    [ "pico:GP9", "keypad1:C3", "green", [ "h-28.8", "v124.8", "h-191.85" ] ],
+    [ "pico:GP10", "keypad1:C2", "green", [ "h-19.2", "v115.2", "h-211.2", "v9.6" ] ],
+    [ "pico:GP11", "keypad1:C1", "green", [ "h-9.6", "v115.2", "h-230.4" ] ],
+    [ "pico:GP16", "keypad1:R4", "green", [ "v76.84", "h-316.49" ] ],
+    [ "pico:GP17", "keypad1:R3", "green", [ "h9.91", "v105.64", "h-336", "v-9.6" ] ],
+    [ "pico:GP18", "keypad1:R2", "green", [ "h19.51", "v134.44", "h-364.8" ] ],
+    [ "pico:GP19", "keypad1:R1", "green", [ "h29.11", "v163.24", "h-384", "v-9.6" ] ],
+    [ "r1:1", "led1:A", "green", [ "h0" ] ],
+    [ "pico:GP13", "r1:2", "green", [ "h-76.8", "v-9.56" ] ],
+    [ "pico:GND.4", "led1:C", "black", [ "h-86.4", "v-143.96" ] ]
+  ],
+  "dependencies": {}
+}

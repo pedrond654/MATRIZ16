@@ -1,0 +1,4 @@
+[wokwi]
+version = 1
+firmware = 'build/MATRIZ16.uf2'
+elf = 'build/MATRIZ16.elf'
