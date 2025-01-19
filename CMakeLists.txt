@@ -72,3 +72,5 @@ target_link_libraries(MATRIZ16
             hardware_pwm
 	    hardware_i2c
         )
+
+pico_add_extra_outputs(MATRIZ16)    
