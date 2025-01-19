@@ -3,7 +3,8 @@
 #include "hardware/timer.h"
 #include "hardware/pwm.h"
 #include "hardware/clocks.h"
-
+#include "hardware/i2c.h"
+#include "inc/ssd1306.h"
 
 //define o LED de saída
 #define GPIO_LED 13
@@ -13,6 +14,16 @@
 
 // Configuração da frequência do buzzer (em Hz)
 #define BUZZER_FREQUENCY 100
+
+// Pinos do display de led
+const uint I2C_SDA = 14;
+const uint I2C_SCL = 15;
+
+
+// Define os pinos dos LEDs
+#define LED_VERDE 11
+#define LED_AZUL 12
+#define LED_VERMELHO 13
 
 
 //define os pinos do teclado com as portas GPIO
@@ -32,6 +43,35 @@ uint _rows[4];
 char _matrix_values[16];
 uint all_columns_mask = 0x0;
 uint column_mask[4];
+
+// Função para inicializar os LEDs
+void init_leds() {
+    gpio_init(LED_VERDE);
+    gpio_init(LED_AZUL);
+    gpio_init(LED_VERMELHO);
+
+    gpio_set_dir(LED_VERDE, GPIO_OUT);
+    gpio_set_dir(LED_AZUL, GPIO_OUT);
+    gpio_set_dir(LED_VERMELHO, GPIO_OUT);
+
+    gpio_put(LED_VERDE, false);
+    gpio_put(LED_AZUL, false);
+    gpio_put(LED_VERMELHO, false);
+}
+
+// Função para acender todos os LEDs
+void acender_branco() {
+    gpio_put(LED_VERDE, true);
+    gpio_put(LED_AZUL, true);
+    gpio_put(LED_VERMELHO, true);
+}
+
+// Função para apagar todos os LEDs
+void apagar_leds() {
+    gpio_put(LED_VERDE, false);
+    gpio_put(LED_AZUL, false);
+    gpio_put(LED_VERMELHO, false);
+}
 
 //imprimir valor binário
 void imprimir_binario(int num) {
@@ -166,8 +206,21 @@ int main() {
 
     gpio_init(BUZZER_PIN);
     gpio_set_dir(BUZZER_PIN, GPIO_OUT);
+
+    init_leds();
+
     // Inicializar o PWM no pino do buzzer
     pwm_init_buzzer(BUZZER_PIN);
+
+    // Inicialização do i2c 
+    i2c_init(i2c1, ssd1306_i2c_clock * 1000);
+    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
+    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
+    gpio_pull_up(I2C_SDA);
+    gpio_pull_up(I2C_SCL);
+
+    // Inicialização completa do oled ssd1306
+    ssd1306_init();
 
     while (true) {
 
@@ -192,6 +245,13 @@ int main() {
         {
             gpio_put(GPIO_LED,false);
         }
+        if (caracter_press == 'A' || caracter_press == 'a' || buffer[0] == 'a' || buffer[0] == 'A') { // Verifica se a tecla pressionada é "A" ou "a"
+            printf("Tecla 'A' pressionada! Acendendo luz branca...\n");
+            acender_branco(); // Acende os LEDs
+            sleep_ms(5000);   // Fica aceso por 5 segundos
+            apagar_leds();    // Apaga os LEDs após o intervalo
+        }
+
         busy_wait_us(500000);
     }
 }
