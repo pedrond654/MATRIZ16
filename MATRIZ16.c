@@ -15,6 +15,12 @@
 #define BUZZER_FREQUENCY 100
 
 
+// Define os pinos dos LEDs
+#define LED_VERDE 11
+#define LED_AZUL 12
+#define LED_VERMELHO 13
+
+
 //define os pinos do teclado com as portas GPIO
 uint columns[4] = {11, 10, 9, 8}; 
 uint rows[4] = {19, 18, 17, 16};
@@ -32,6 +38,35 @@ uint _rows[4];
 char _matrix_values[16];
 uint all_columns_mask = 0x0;
 uint column_mask[4];
+
+// Função para inicializar os LEDs
+void init_leds() {
+    gpio_init(LED_VERDE);
+    gpio_init(LED_AZUL);
+    gpio_init(LED_VERMELHO);
+
+    gpio_set_dir(LED_VERDE, GPIO_OUT);
+    gpio_set_dir(LED_AZUL, GPIO_OUT);
+    gpio_set_dir(LED_VERMELHO, GPIO_OUT);
+
+    gpio_put(LED_VERDE, false);
+    gpio_put(LED_AZUL, false);
+    gpio_put(LED_VERMELHO, false);
+}
+
+// Função para acender todos os LEDs
+void acender_branco() {
+    gpio_put(LED_VERDE, true);
+    gpio_put(LED_AZUL, true);
+    gpio_put(LED_VERMELHO, true);
+}
+
+// Função para apagar todos os LEDs
+void apagar_leds() {
+    gpio_put(LED_VERDE, false);
+    gpio_put(LED_AZUL, false);
+    gpio_put(LED_VERMELHO, false);
+}
 
 //imprimir valor binário
 void imprimir_binario(int num) {
@@ -166,6 +201,9 @@ int main() {
 
     gpio_init(BUZZER_PIN);
     gpio_set_dir(BUZZER_PIN, GPIO_OUT);
+
+    init_leds();
+
     // Inicializar o PWM no pino do buzzer
     pwm_init_buzzer(BUZZER_PIN);
 
@@ -192,6 +230,13 @@ int main() {
         {
             gpio_put(GPIO_LED,false);
         }
+        if (caracter_press == 'A' || caracter_press == 'a' || buffer[0] == 'a' || buffer[0] == 'A') { // Verifica se a tecla pressionada é "A" ou "a"
+            printf("Tecla 'A' pressionada! Acendendo luz branca...\n");
+            acender_branco(); // Acende os LEDs
+            sleep_ms(5000);   // Fica aceso por 5 segundos
+            apagar_leds();    // Apaga os LEDs após o intervalo
+        }
+
         busy_wait_us(500000);
     }
 }
