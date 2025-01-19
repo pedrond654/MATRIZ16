@@ -3,7 +3,8 @@
 #include "hardware/timer.h"
 #include "hardware/pwm.h"
 #include "hardware/clocks.h"
-
+#include "hardware/i2c.h"
+#include "inc/ssd1306.h"
 
 //define o LED de saída
 #define GPIO_LED 13
@@ -13,6 +14,10 @@
 
 // Configuração da frequência do buzzer (em Hz)
 #define BUZZER_FREQUENCY 100
+
+// Pinos do display de led
+const uint I2C_SDA = 14;
+const uint I2C_SCL = 15;
 
 
 // Define os pinos dos LEDs
@@ -206,6 +211,16 @@ int main() {
 
     // Inicializar o PWM no pino do buzzer
     pwm_init_buzzer(BUZZER_PIN);
+
+    // Inicialização do i2c 
+    i2c_init(i2c1, ssd1306_i2c_clock * 1000);
+    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
+    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
+    gpio_pull_up(I2C_SDA);
+    gpio_pull_up(I2C_SCL);
+
+    // Inicialização completa do oled ssd1306
+    ssd1306_init();
 
     while (true) {
 
