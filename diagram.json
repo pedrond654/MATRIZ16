@@ -31,7 +31,7 @@
     [ "pico:GP13", "r1:2", "green", [ "h-76.8", "v-9.56" ] ],
     [ "pico:GND.4", "led1:C", "black", [ "h-86.4", "v-143.96" ] ],
     [ "bz1:1", "pico:GND.8", "green", [ "v19.2" ] ],
-    [ "bz1:2", "pico:GP22", "green", [ "v0" ] ]
+    [ "pico:GP21", "bz1:2", "green", [ "h67.51" ] ]
   ],
   "dependencies": {}
 }
