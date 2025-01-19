@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include "pico/stdlib.h"
+#include "hardware/timer.h"
+#include "hardware/pwm.h"
+#include "hardware/clocks.h"
+
+// Define os pinos dos LEDs
+#define LED_VERDE 14
+#define LED_AZUL 15
+#define LED_VERMELHO 16
+
+// Configuração do pino do buzzer
+#define BUZZER_PIN 21
+
+// Configuração da frequência do buzzer (em Hz)
+#define BUZZER_FREQUENCY 100
+
+// Função para inicializar os LEDs
+void init_leds() {
+    gpio_init(LED_VERDE);
+    gpio_init(LED_AZUL);
+    gpio_init(LED_VERMELHO);
+
+    gpio_set_dir(LED_VERDE, GPIO_OUT);
+    gpio_set_dir(LED_AZUL, GPIO_OUT);
+    gpio_set_dir(LED_VERMELHO, GPIO_OUT);
+
+    gpio_put(LED_VERDE, false);
+    gpio_put(LED_AZUL, false);
+    gpio_put(LED_VERMELHO, false);
+}
+
+// Função para acender todos os LEDs
+void acender_branco() {
+    gpio_put(LED_VERDE, true);
+    gpio_put(LED_AZUL, true);
+    gpio_put(LED_VERMELHO, true);
+}
+
+// Função para apagar todos os LEDs
+void apagar_leds() {
+    gpio_put(LED_VERDE, false);
+    gpio_put(LED_AZUL, false);
+    gpio_put(LED_VERMELHO, false);
+}
+
+// Função principal
+int main() {
+    stdio_init_all();
+
+    // Inicializa os LEDs
+    init_leds();
+
+    // Inicializa o buzzer
+    gpio_init(BUZZER_PIN);
+    gpio_set_dir(BUZZER_PIN, GPIO_OUT);
+    gpio_put(BUZZER_PIN, false);
+
+    char tecla; // Variável para capturar a tecla pressionada
+
+    while (true) {
+        printf("Pressione uma tecla para continuar: ");
+        tecla = getchar(); // Lê a tecla pressionada pelo usuário
+
+        if (tecla == 'A' || tecla == 'a') { // Verifica se a tecla pressionada é "A" ou "a"
+            printf("Tecla 'A' pressionada! Acendendo luz branca...\n");
+            acender_branco(); // Acende os LEDs
+            sleep_ms(5000);   // Fica aceso por 5 segundos
+            apagar_leds();    // Apaga os LEDs após o intervalo
+        } else {
+            printf("Tecla '%c' pressionada. Luz branca não será acesa.\n", tecla);
+        }
+
+        sleep_ms(500); // Pequeno intervalo antes de permitir a próxima entrada
+    }
+
+    return 0;
+}
