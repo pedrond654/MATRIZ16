@@ -49,7 +49,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(MATRIZ16 MATRIZ16.c )
+add_executable(MATRIZ16 MATRIZ16.c inc/ssd1306_i2c.c)
 
 pico_set_program_name(MATRIZ16 "MATRIZ16")
 pico_set_program_version(MATRIZ16 "0.1")
@@ -70,4 +70,5 @@ target_include_directories(MATRIZ16 PRIVATE
 # Add any user requested libraries
 target_link_libraries(MATRIZ16 
             hardware_pwm
+	    hardware_i2c
         )
