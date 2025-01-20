@@ -52,6 +52,8 @@ bool blink_enabled = false;
 uint column_mask[4];
 bool use_microphone = true;
 
+
+
 // Função para inicializar os LEDs
 void init_leds()
 {
@@ -75,6 +77,10 @@ void acender_branco()
     gpio_put(LED_AZUL, true);
     gpio_put(LED_VERMELHO, true);
 }
+
+// Funções para acender os leds indivudalmente
+void acender_vermelho()  {gpio_put(LED_VERMELHO, true); }
+void acender_azul() { gpio_put(LED_AZUL, true); }
 
 // Função para apagar todos os LEDs
 void apagar_leds()
@@ -325,5 +331,29 @@ int main()
         busy_wait_us(SAMPLING_TIME_US);
     }
 
+    if (pico_keypad_get_key() == '#') {
+
+        printf("Tecla '#' acionada! Sirene ativa\n");
+
+        
+        for (int i = 0; i < 5; i++) { // Repete a sirene 5 vezes
+            acender_vermelho(); 
+            beep(BUZZER_PIN, 400); 
+            sleep_ms(400);
+            apagar_leds();
+
+            acender_azul(); 
+            beep(BUZZER_PIN, 400);
+            sleep_ms(400);
+            apagar_leds();
+
+            acender_branco(); 
+            beep(BUZZER_PIN, 400);
+            sleep_ms(400);
+            apagar_leds();
+    }
+    }
+
+    
     busy_wait_us(500000);
 }
