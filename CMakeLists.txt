@@ -12,6 +12,20 @@ if (EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
 # ====================================================================================
+# == DO NOT EDIT THE FOLLOWING LINES for the Raspberry Pi Pico VS Code Extension to work ==
+if(WIN32)
+    set(USERHOME $ENV{USERPROFILE})
+else()
+    set(USERHOME $ENV{HOME})
+endif()
+set(sdkVersion 2.1.0)
+set(toolchainVersion 13_3_Rel1)
+set(picotoolVersion 2.1.0)
+set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
+if (EXISTS ${picoVscode})
+    include(${picoVscode})
+endif()
+# ====================================================================================
 # Generated Cmake Pico project file
 
 cmake_minimum_required(VERSION 3.13)
@@ -55,6 +69,7 @@ pico_set_program_name(MATRIZ16 "MATRIZ16")
 pico_set_program_version(MATRIZ16 "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
+pico_add_extra_outputs(MATRIZ16)
 pico_enable_stdio_uart(MATRIZ16 1)
 pico_enable_stdio_usb(MATRIZ16 1)
 
@@ -71,6 +86,7 @@ target_include_directories(MATRIZ16 PRIVATE
 target_link_libraries(MATRIZ16 
             hardware_pwm
 	    hardware_i2c
+        hardware_adc
         )
 
 pico_add_extra_outputs(MATRIZ16)    
